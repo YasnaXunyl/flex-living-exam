@@ -1,4 +1,3 @@
-import { mockProperty } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,7 +13,7 @@ import Link from "next/link";
 export default function ManagerPropertiesPage() {
   // In a real app, we would fetch properties from an API
   const properties = Array(6)
-    .fill(mockProperty)
+    .fill({})
     .map((p, i) => ({
       ...p,
       id: `${i + 1}`,
@@ -47,9 +46,7 @@ export default function ManagerPropertiesPage() {
               <TableCell>
                 {property.location.city}, {property.location.country}
               </TableCell>
-              <TableCell>
-                {property.price.currency} {property.price.perNight}/night
-              </TableCell>
+              <TableCell>USD {property.pricePerNight}/night</TableCell>
               <TableCell>
                 <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
                   Active

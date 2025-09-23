@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Property {
+  id            String  @id @default(cuid())
+  name          String
+  description   String?
+  mainImage     String?
+  pricePerNight Float   @default(0)
+  city          String?
+  country       String?
+  rating        Float?
+
+  reviewChannels ReviewChannel[]
+  reviews        Review[]
+  amenities      PropertyAmenity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PropertyAmenity {
+  id         String   @id @default(cuid())
+  name       String
+  icon       String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReviewChannel {
+  id   String      @id @default(cuid())
+  type ChannelType
+
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+
+  hostaway   HostawayConfig? @relation(fields: [hostawayId], references: [id])
+  hostawayId String?         @unique
+
+  google   GoogleConfig? @relation(fields: [googleId], references: [id])
+  googleId String?       @unique
+
+  reviews Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ChannelType {
+  HOSTAWAY
+  GOOGLE
+  OTHER
+}
+
+model HostawayConfig {
+  id                 String @id @default(cuid())
+  apiKey             String
+  propertyExternalId String
+
+  channel ReviewChannel?
+}
+
+model GoogleConfig {
+  id      String @id @default(cuid())
+  placeId String
+
+  channel ReviewChannel?
+}
+
+model Review {
+  id           String       @id @default(cuid())
+  externalId   String
+  reviewerName String?
+  rating       Float?
+  status       ReviewStatus @default(PENDING)
+  text         String?
+
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+
+  reviewChannel   ReviewChannel @relation(fields: [reviewChannelId], references: [id])
+  reviewChannelId String
+
+  categories ReviewCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReviewCategory {
+  id       String @id @default(cuid())
+  reviewId String
+  category String
+  rating   Float?
+
+  review    Review   @relation(fields: [reviewId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ReviewStatus {
+  PENDING
+  HIDDEN
+  SHOWN
+}

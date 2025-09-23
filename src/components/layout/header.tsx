@@ -103,18 +103,6 @@ export function Header() {
                 <span className="pr-4">🇬🇧</span> English
               </span>
             </Button>
-            {/* Currency Selector */}
-            <Button
-              variant="ghost"
-              className={`${
-                scrolled ? "text-white" : "text-[#333]"
-              } font-medium`}
-            >
-              <span className="text-lg drop-shadow-sm">£</span>
-              <span className="text-xs font-medium ml-1 drop-shadow-sm">
-                GBP
-              </span>
-            </Button>
           </div>
 
           {/* Mobile Menu */}
@@ -130,17 +118,7 @@ export function Header() {
               <span className="text-lg">🇬🇧</span>
               <span className="text-xs font-medium ml-1">GB</span>
             </Button>
-            {/* Currency */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`rounded-full border-2 border-transparent ${
-                scrolled ? "text-white" : "text-[#333]"
-              } font-bold`}
-            >
-              <span className="text-lg">£</span>
-              <span className="text-xs font-medium ml-1">GBP</span>
-            </Button>
+
             {/* Menu Sheet */}
             <Sheet>
               <SheetTrigger asChild>

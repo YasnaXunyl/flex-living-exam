@@ -1,7 +1,6 @@
-import { Property } from "@/types/property";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Property } from "@/generated/prisma/wasm";
 
 interface ImageGalleryProps {
   property: Property;
@@ -12,34 +11,28 @@ export function ImageGallery({ property }: ImageGalleryProps) {
     <div className="grid grid-cols-4 gap-4 rounded-xl overflow-hidden h-[480px]">
       <div className="col-span-2 row-span-2 relative">
         <Image
-          src={property.images[0]}
+          src={property.mainImage ?? "/placeholder.png"}
           alt={property.name}
           className="object-cover"
           fill
         />
       </div>
-      {property.images.slice(1, 5).map((image, index) => (
+      {Array.from({ length: 5 }).map((_, index) => (
         <div
-          key={image}
+          key={index}
           className={cn("relative", {
-            "hidden md:block": index >= 2,
+            "col-span-2 row-span-2": index === 0,
+            "hidden md:block": index > 1,
           })}
         >
           <Image
-            src={image}
-            alt={`${property.name} - Image ${index + 2}`}
+            src={property.mainImage ?? "/placeholder.png"}
+            alt={`${property.name} - Image ${index + 1}`}
             className="object-cover"
             fill
           />
         </div>
       ))}
-      <Button
-        variant="secondary"
-        size="sm"
-        className="absolute bottom-4 right-4 rounded-full"
-      >
-        Show all photos
-      </Button>
     </div>
   );
 }

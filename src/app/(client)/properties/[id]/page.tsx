@@ -1,4 +1,8 @@
-import { mockProperty } from "@/lib/mock-data";
+import { notFound } from "next/navigation";
+
+import { prisma } from "@/lib/db";
+import { ReviewStatus } from "@/generated/prisma/wasm";
+
 import { PropertyHeader } from "./components/property-header";
 import { ImageGallery } from "./components/image-gallery";
 import { PropertyInfo } from "./components/property-info";
@@ -6,20 +10,29 @@ import { Amenities } from "./components/amenities";
 import { Location } from "./components/location";
 
 interface PropertyPageProps {
-  params: {
-    id: string;
-  };
-  searchParams: {
-    guests?: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
-export default function PropertyPage({
-  params,
-  searchParams,
-}: PropertyPageProps) {
-  // In a real app, we would fetch the property data here based on the ID
-  const property = mockProperty;
+export default async function PropertyPage({ params }: PropertyPageProps) {
+  const { id } = await params;
+
+  const property = await prisma.property.findUnique({
+    where: { id },
+    include: {
+      reviews: {
+        where: {
+          status: ReviewStatus.SHOWN,
+        },
+        include: {
+          categories: true,
+        },
+      },
+    },
+  });
+
+  if (!property) {
+    notFound();
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 space-y-8">
@@ -27,7 +40,7 @@ export default function PropertyPage({
       <ImageGallery property={property} />
       <PropertyInfo property={property} />
       <div className="border-t pt-8">
-        <Amenities property={property} />
+        <Amenities />
       </div>
       <div className="border-t pt-8">
         <Location property={property} />

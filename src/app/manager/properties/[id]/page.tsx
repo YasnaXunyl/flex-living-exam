@@ -1,4 +1,3 @@
-import { mockProperty } from "@/lib/mock-data";
 import { EditPropertyForm } from "./components/EditPropertyForm";
 import { ReservationTable } from "./components/ReservationTable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,7 +13,7 @@ export default function ManagerPropertyPage({
   params,
 }: ManagerPropertyPageProps) {
   // In a real app, we would fetch property data based on the ID
-  const property = mockProperty;
+  const property = {};
 
   const handleSave = (updatedProperty: typeof property) => {
     // In a real app, we would save the updated property data
@@ -36,9 +35,7 @@ export default function ManagerPropertyPage({
           <TabsTrigger value="reservations">Reservations</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="details" className="space-y-6">
-          <EditPropertyForm property={property} onSave={handleSave} />
-        </TabsContent>
+        <TabsContent value="details" className="space-y-6"></TabsContent>
 
         <TabsContent value="reservations">
           <Card>
