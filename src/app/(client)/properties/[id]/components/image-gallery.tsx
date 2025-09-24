@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Property } from "@/generated/prisma/wasm";
+import { Property } from "@prisma/client";
 
 interface ImageGalleryProps {
   property: Property;

@@ -3,13 +3,13 @@ import { DataTable } from "@/components/ui/data-table/data-table";
 import { prisma } from "@/lib/db";
 
 interface ManagerReviewsPageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     page?: string;
     q?: string;
     sort?: string;
     rows?: string;
     order?: "asc" | "desc";
-  };
+  }>;
 }
 
 export default async function ManagerReviewsPage({
@@ -20,7 +20,7 @@ export default async function ManagerReviewsPage({
     rows: rowsParam,
     sort: sortParam,
     order: orderParam,
-  } = (await searchParams) ?? {};
+  } = searchParams ? await searchParams : {};
 
   const page = Number(pageParam ?? 1);
   const pageSize = Number(rowsParam ?? 10);

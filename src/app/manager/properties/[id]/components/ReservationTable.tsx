@@ -46,11 +46,7 @@ const statusStyles = {
   cancelled: "bg-red-100 text-red-800",
 };
 
-interface ReservationTableProps {
-  propertyId: string;
-}
-
-export function ReservationTable({ propertyId }: ReservationTableProps) {
+export function ReservationTable() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">

@@ -5,13 +5,13 @@ import { Plus } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table/data-table";
 
 interface ManagerPropertiesPageProps {
-  searchParams?: {
+  searchParams?: Promise<{
     page?: string;
     q?: string;
     sort?: string;
     rows?: string;
     order?: "asc" | "desc";
-  };
+  }>;
 }
 
 export default async function ManagerPropertiesPage({
@@ -22,7 +22,7 @@ export default async function ManagerPropertiesPage({
     rows: rowsParam,
     sort: sortParam,
     order: orderParam,
-  } = (await searchParams) ?? {};
+  } = searchParams ? await searchParams : {};
 
   const page = Number(pageParam ?? 1);
   const pageSize = Number(rowsParam ?? 10);

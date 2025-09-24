@@ -1,7 +1,7 @@
-import { Property } from "@/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { Heart, Share } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { Property } from "@prisma/client";
 
 interface PropertyHeaderProps {
   property: Property;

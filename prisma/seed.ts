@@ -1,8 +1,4 @@
-import {
-  PrismaClient,
-  ChannelType,
-  ReviewStatus,
-} from "@/generated/prisma/client";
+import { PrismaClient, ChannelType, ReviewStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

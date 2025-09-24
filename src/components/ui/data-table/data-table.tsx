@@ -6,7 +6,6 @@ import {
   getCoreRowModel,
   SortingState,
   getSortedRowModel,
-  ColumnFiltersState,
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,

@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Property } from "@/generated/prisma/client";
+import { Property } from "@prisma/client";
 
 export type PropertyCardProps = Pick<
   Property,

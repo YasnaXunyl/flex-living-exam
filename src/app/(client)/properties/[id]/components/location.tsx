@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Property } from "@/generated/prisma";
+import { Property } from "@prisma/client";
 
 interface LocationProps {
   property: Property;

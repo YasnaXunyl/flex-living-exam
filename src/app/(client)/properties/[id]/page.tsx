@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/db";
-import { ReviewStatus } from "@/generated/prisma/wasm";
+import { ReviewStatus } from "@prisma/client";
 
 import { PropertyHeader } from "./components/property-header";
 import { ImageGallery } from "./components/image-gallery";

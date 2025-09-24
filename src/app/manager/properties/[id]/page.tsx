@@ -6,26 +6,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 
 interface ManagerPropertyPageProps {
-  params: { id: string };
-  searchParams?: {
+  params: Promise<{ id: string }>; // keep Promise for App Router type
+  searchParams?: Promise<{
     page?: string;
     rows?: string;
     sort?: string;
     order?: "asc" | "desc";
-  };
+  }>;
 }
 
 export default async function ManagerPropertyPage({
   params,
   searchParams,
 }: ManagerPropertyPageProps) {
-  const { id } = params;
+  const { id } = await params;
+
   const {
     page: pageParam,
     rows: rowsParam,
     sort: sortParam,
     order: orderParam,
-  } = (await searchParams) ?? {};
+  } = searchParams ? await searchParams : {};
 
   const page = Number(pageParam ?? 1);
   const pageSize = Number(rowsParam ?? 10);
@@ -95,7 +96,7 @@ export default async function ManagerPropertyPage({
 
         <TabsContent value="reservations">
           <Card>
-            <ReservationTable propertyId={id} />
+            <ReservationTable />
           </Card>
         </TabsContent>
       </Tabs>
