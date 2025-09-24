@@ -1,7 +1,8 @@
-"use client";
+import { Suspense } from "react";
+import Link from "next/link";
 
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+
 import {
   ArrowUpRight,
   Building2,
@@ -10,7 +11,11 @@ import {
   Settings,
   Users,
 } from "lucide-react";
-import Link from "next/link";
+
+import { Card } from "@/components/ui/card";
+
+import { ManagerSummary } from "./components/manager-summary";
+import { ManagerSummarySkeleton } from "./components/manager-summary-skeleton";
 
 export default function ManagerDashboard() {
   return (
@@ -34,24 +39,25 @@ export default function ManagerDashboard() {
           </Card>
         </Link>
 
+        <Link href="/manager/reviews">
+          <Card className="p-4 border-2 border-primary hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="flex items-center gap-2">
+              <Users className="h-6 w-6 text-primary" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-primary">Reviews</p>
+                <p className="text-xs text-muted-foreground">Manage reviews</p>
+              </div>
+              <ArrowUpRight className="h-4 w-4 ml-auto text-primary" />
+            </div>
+          </Card>
+        </Link>
+
         <Card className={cn("p-4 border-2 opacity-50 cursor-not-allowed")}>
           <div className="flex items-center gap-2">
             <Calendar className="h-6 w-6" />
             <div className="space-y-1">
               <p className="text-sm font-medium">Bookings</p>
               <p className="text-xs text-muted-foreground">View reservations</p>
-            </div>
-          </div>
-        </Card>
-
-        <Card className={cn("p-4 border-2 opacity-50 cursor-not-allowed")}>
-          <div className="flex items-center gap-2">
-            <Users className="h-6 w-6" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Guests</p>
-              <p className="text-xs text-muted-foreground">
-                Manage guest profiles
-              </p>
             </div>
           </div>
         </Card>
@@ -80,32 +86,9 @@ export default function ManagerDashboard() {
           </div>
         </Card>
       </div>
-
-      <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="col-span-full p-6">
-          <h3 className="font-semibold text-lg mb-4">Quick Stats</h3>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Properties
-              </p>
-              <p className="text-2xl font-bold">12</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">
-                Active Listings
-              </p>
-              <p className="text-2xl font-bold">8</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">
-                Total Bookings
-              </p>
-              <p className="text-2xl font-bold">124</p>
-            </div>
-          </div>
-        </Card>
-      </div>
+      <Suspense fallback={<ManagerSummarySkeleton />}>
+        <ManagerSummary />
+      </Suspense>
     </div>
   );
 }

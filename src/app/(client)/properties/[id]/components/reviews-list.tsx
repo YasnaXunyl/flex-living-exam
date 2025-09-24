@@ -30,7 +30,6 @@ export function ReviewsList({ reviews }: ReviewsListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Reviews</h2>
         <div className="flex items-center gap-2">
@@ -43,7 +42,6 @@ export function ReviewsList({ reviews }: ReviewsListProps) {
         </div>
       </div>
 
-      {/* Horizontal scroll for review cards */}
       <div className="flex gap-4 overflow-x-auto pb-4">
         {reviews.map((review) => (
           <Card

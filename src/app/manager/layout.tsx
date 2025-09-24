@@ -1,5 +1,7 @@
-import { Building2, Home, Users } from "lucide-react";
 import Link from "next/link";
+
+import { Building2, Home, Users } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
@@ -14,6 +16,11 @@ const sidebarItems = [
     icon: Building2,
     href: "/manager/properties",
   },
+  {
+    title: "Reviews",
+    icon: Users,
+    href: "/manager/reviews",
+  },
 ];
 
 interface ManagerLayoutProps {
@@ -23,7 +30,6 @@ interface ManagerLayoutProps {
 export default function ManagerLayout({ children }: ManagerLayoutProps) {
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar */}
       <div className="w-64 border-r bg-card">
         <div className="p-6">
           <h1 className="text-xl font-bold">Flex Living</h1>
@@ -53,7 +59,6 @@ export default function ManagerLayout({ children }: ManagerLayoutProps) {
         </nav>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 overflow-auto">
         <header className="border-b">
           <div className="flex h-16 items-center px-6">

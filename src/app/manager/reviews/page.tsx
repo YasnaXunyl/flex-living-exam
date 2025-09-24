@@ -1,93 +1,88 @@
-"use client";
+import { columns, ReviewWithProperty } from "@/components/review/columns";
+import { DataTable } from "@/components/ui/data-table/data-table";
+import { prisma } from "@/lib/db";
 
-import { useEffect, useState } from "react";
-import { DataTable } from "@/components/ui/data-table";
-import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
-import { Review, ReviewStatus } from "@/generated/prisma";
-
-type ReviewWithProperty = Review & {
-  property: {
-    name: string;
+interface ManagerReviewsPageProps {
+  searchParams?: {
+    page?: string;
+    q?: string;
+    sort?: string;
+    rows?: string;
+    order?: "asc" | "desc";
   };
-};
+}
 
-const columns: ColumnDef<ReviewWithProperty>[] = [
-  {
-    accessorKey: "reviewerName",
-    header: "Reviewer",
-  },
-  {
-    accessorKey: "property.name",
-    header: "Property",
-  },
-  {
-    accessorKey: "rating",
-    header: "Rating",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as ReviewStatus;
-      return (
-        <Badge variant={status === "SHOWN" ? "default" : "secondary"}>
-          {status.toLowerCase()}
-        </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Date",
-    cell: ({ row }) => {
-      return format(new Date(row.getValue("createdAt")), "PPP");
-    },
-  },
-];
+export default async function ManagerReviewsPage({
+  searchParams,
+}: ManagerReviewsPageProps) {
+  const {
+    page: pageParam,
+    rows: rowsParam,
+    sort: sortParam,
+    order: orderParam,
+  } = (await searchParams) ?? {};
 
-export default function ReviewsPage() {
-  const [data, setData] = useState<ReviewWithProperty[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [pageCount, setPageCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const page = Number(pageParam ?? 1);
+  const pageSize = Number(rowsParam ?? 10);
+  const sortField = sortParam ?? "createdAt";
+  const sortOrder = (orderParam as "asc" | "desc") ?? "desc";
 
-  useEffect(() => {
-    fetchReviews();
-  }, [currentPage, pageSize]);
+  const allowedSortFields = [
+    "createdAt",
+    "rating",
+    "reviewerName",
+    "text",
+    "status",
+  ];
 
-  const fetchReviews = async () => {
-    try {
-      const response = await fetch(
-        `/api/reviews?page=${currentPage}&pageSize=${pageSize}`
-      );
-      const result = await response.json();
-      setData(result.reviews);
-      setPageCount(Math.ceil(result.total / pageSize));
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const safeSortField = allowedSortFields.includes(sortField)
+    ? sortField
+    : "createdAt";
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const safeSortOrder = sortOrder === "asc" ? "asc" : "desc";
+
+  const [reviews, total] = await Promise.all([
+    prisma.review.findMany({
+      orderBy: { [safeSortField]: safeSortOrder },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      select: {
+        id: true,
+        externalId: true,
+        reviewerName: true,
+        rating: true,
+        status: true,
+        text: true,
+        propertyId: true,
+        reviewChannelId: true,
+        createdAt: true,
+        updatedAt: true,
+        property: {
+          select: {
+            name: true,
+          },
+        },
+        categories: {
+          select: {
+            id: true,
+            category: true,
+            rating: true,
+          },
+        },
+      },
+    }),
+    prisma.review.count(),
+  ]);
 
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold tracking-tight mb-6">Reviews</h1>
-      <DataTable
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Reviews</h1>
+      </div>
+      <DataTable<ReviewWithProperty, unknown>
         columns={columns}
-        data={data}
-        pageCount={pageCount}
-        currentPage={currentPage}
-        pageSize={pageSize}
-        onPageChange={setCurrentPage}
-        onPageSizeChange={setPageSize}
+        data={reviews}
+        pageCount={Math.ceil(total / pageSize)}
       />
     </div>
   );

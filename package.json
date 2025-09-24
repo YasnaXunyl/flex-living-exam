@@ -1,7 +1,13 @@
 {
   "name": "flex-living-exam",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Technical assessment for flex living",
+  "author": "Xunylyasna",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YasnaXunyl/flex-living-exam"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

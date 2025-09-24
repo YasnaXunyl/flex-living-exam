@@ -1,4 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flex Living Technical Assessment
+
+This is a technical assessment project that implements a property management system inspired by The Flex Global's design. The project demonstrates full-stack development capabilities using Next.js, Prisma, and modern React patterns.
+
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Database:** PostgreSQL with Prisma ORM
+- **Styling:** Tailwind CSS
+- **Components:** shadcn/ui
+- **State Management:** React Server Components + Client Hooks
+- **Type Safety:** TypeScript
+- **Package Manager:** pnpm
+
+## Finished
+
+- Viewing and managing Properties
+- Viewing and managing reviews
+
+## TODOs
+
+- Hostaway Library, Google Places Library
+- Cron job to pull data from Google Places API and Hostaway API
+- Review channel configurations
 
 ## Getting Started
 

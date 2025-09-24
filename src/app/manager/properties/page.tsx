@@ -1,66 +1,79 @@
+import { columns } from "@/components/property/columns";
+import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Plus } from "lucide-react";
-import Link from "next/link";
+import { DataTable } from "@/components/ui/data-table/data-table";
 
-export default function ManagerPropertiesPage() {
-  // In a real app, we would fetch properties from an API
-  const properties = Array(6)
-    .fill({})
-    .map((p, i) => ({
-      ...p,
-      id: `${i + 1}`,
-    }));
+interface ManagerPropertiesPageProps {
+  searchParams?: {
+    page?: string;
+    q?: string;
+    sort?: string;
+    rows?: string;
+    order?: "asc" | "desc";
+  };
+}
+
+export default async function ManagerPropertiesPage({
+  searchParams,
+}: ManagerPropertiesPageProps) {
+  const {
+    page: pageParam,
+    rows: rowsParam,
+    sort: sortParam,
+    order: orderParam,
+  } = (await searchParams) ?? {};
+
+  const page = Number(pageParam ?? 1);
+  const pageSize = Number(rowsParam ?? 10);
+  const sortField = sortParam ?? "createdAt";
+  const sortOrder = (orderParam as "asc" | "desc") ?? "desc";
+
+  const allowedSortFields = [
+    "createdAt",
+    "name",
+    "pricePerNight",
+    "city",
+    "country",
+    "rating",
+  ];
+
+  const safeSortField = allowedSortFields.includes(sortField)
+    ? sortField
+    : "createdAt";
+
+  const safeSortOrder = sortOrder === "asc" ? "asc" : "desc";
+
+  const [properties, total] = await Promise.all([
+    prisma.property.findMany({
+      orderBy: { [safeSortField]: safeSortOrder },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      include: {
+        _count: {
+          select: {
+            reviews: true,
+          },
+        },
+      },
+    }),
+    prisma.property.count(),
+  ]);
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Properties</h1>
-        <Button>
+        <Button disabled={true} className="cursor-not-allowed">
           <Plus className="h-4 w-4 mr-2" />
           Add Property
         </Button>
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {properties.map((property) => (
-            <TableRow key={property.id}>
-              <TableCell className="font-medium">{property.name}</TableCell>
-              <TableCell>
-                {property.location.city}, {property.location.country}
-              </TableCell>
-              <TableCell>USD {property.pricePerNight}/night</TableCell>
-              <TableCell>
-                <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800">
-                  Active
-                </span>
-              </TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" asChild>
-                  <Link href={`/manager/properties/${property.id}`}>Edit</Link>
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <DataTable
+        columns={columns}
+        data={properties}
+        pageCount={Math.ceil(total / pageSize)}
+      />
     </div>
   );
 }

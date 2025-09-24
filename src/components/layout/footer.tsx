@@ -1,5 +1,3 @@
-// THIS WAS VIBECODED PLEASE IGNORE CODE PRACTICES
-
 export function Footer() {
   return (
     <footer className="bg-[#284E4C] text-white font-sans mt-0">
